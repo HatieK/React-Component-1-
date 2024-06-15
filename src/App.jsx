@@ -1,5 +1,7 @@
+import BookingTicket from "./Exercise-BookingTicket/BookingTicket";
 import MainComponent from "./Exercise-Component/MainComponent";
 import Glasses from "./Exercise-Glasses/Glasses";
+import ShoeShop from "./Exercise-ShoeShop/ShoeShop";
 
 function App() {
   return (
@@ -8,7 +10,13 @@ function App() {
       {/* <MainComponent /> */}
 
       {/* Exercise 2 */}
-      <Glasses />
+      {/* <Glasses /> */}
+
+      {/* Exercise 3 */}
+      <ShoeShop />
+
+      {/* Exercise 4 */}
+      {/* <BookingTicket /> */}
     </>
   );
 }
