@@ -13,10 +13,10 @@ function App() {
       {/* <Glasses /> */}
 
       {/* Exercise 3 */}
-      <ShoeShop />
+      {/* <ShoeShop /> */}
 
       {/* Exercise 4 */}
-      {/* <BookingTicket /> */}
+      <BookingTicket />
     </>
   );
 }

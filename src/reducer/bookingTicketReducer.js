@@ -1,5 +1,5 @@
-const initialState = {
-  seatListRaw: [
+const initialBookingTicket = {
+  seatListData: [
     {
       row: "",
       seatList: [
@@ -191,40 +191,70 @@ const initialState = {
   bookedSeatList: [],
 };
 
-export const bookingTicketReducer = (state = initialState, action) => {
+export const bookingTicketReducer = (state = initialBookingTicket, action) => {
   switch (action.type) {
-    case "booked": {
-      const newBookedList = [...state.bookedSeatList];
-      const index = newBookedList.findIndex((item) => {
-        return item.numberSeat === action.value.numberSeat;
+    case "add": {
+      const updatedSeatListData = state.seatListData.map((row) => {
+        const updatedSeatList = row.seatList.map((seat) => {
+          if (seat.numberSeat === action.item.numberSeat) {
+            return { ...seat };
+          }
+          return seat;
+        });
+        return { ...row, seatList: updatedSeatList };
       });
-      if (index === -1) {
-        newBookedList.push(action.value);
-        return {
-          ...state,
-          bookedSeatList: newBookedList,
-        };
+      const updateBookedSeatList = [...state.bookedSeatList];
+      const index = updateBookedSeatList.findIndex(
+        (item) => item.numberSeat === action.item.numberSeat
+      );
+      if (index !== -1) {
+        updateBookedSeatList.splice(index, 1);
       } else {
-        newBookedList.splice(index, 1);
-        return {
-          ...state,
-          bookedSeatList: newBookedList,
-        };
+        updateBookedSeatList.push(action.item);
       }
-      /*
-      index để kiểm tra phần tử đó đã tồn tại trong mảng chưa, nếu rồi thì xóa, chưa
-      thì push
-      */
+      return {
+        ...state,
+        seatListData: updatedSeatListData,
+        bookedSeatList: updateBookedSeatList,
+      };
     }
 
+    case "delete": {
+      const updateBookedSeatList = [...state.bookedSeatList];
+      const index = updateBookedSeatList.findIndex(
+        (item) => item.numberSeat === action.numberSeatValue
+      );
+      if (index !== -1) {
+        updateBookedSeatList.splice(index, 1);
+      } else {
+        return updateBookedSeatList;
+      }
+      return {
+        ...state,
+        bookedSeatList: updateBookedSeatList,
+      };
+    }
+
+    case "complete": {
+      const bookedSeatNumbers = state.bookedSeatList.map(
+        (seat) => seat.numberSeat
+      );
+      const updatedSeatListData = state.seatListData.map((row) => {
+        const updatedSeatList = row.seatList.map((seat) => {
+          if (bookedSeatNumbers.includes(seat.numberSeat)) {
+            return { ...seat, booked: true };
+          }
+          return seat;
+        });
+        return { ...row, seatList: updatedSeatList };
+      });
+      return {
+        ...state,
+        seatListData: updatedSeatListData,
+        bookedSeatList: [],
+      };
+    }
     default:
-      return state;
+      return { ...state };
   }
 };
-
-/*
-[]
-tìm thấy [1]
-duyêt
-nếu thấy index cho mảng đó 
-*/

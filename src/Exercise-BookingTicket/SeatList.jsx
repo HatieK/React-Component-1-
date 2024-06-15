@@ -1,58 +1,61 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const SeatList = () => {
   const dispatch = useDispatch();
-  const { seatListRaw, bookedSeatList } = useSelector(
-    (state) => state.bookingTicket
-  );
-  const handleClickBooking = (value) => {
-    dispatch({ type: "booked", value });
+
+  const { seatListData } = useSelector((state) => state.bookingTicketReducer);
+  const { bookedSeatList } = useSelector((state) => state.bookingTicketReducer);
+  const newSeatListData = [...seatListData];
+  newSeatListData.splice(0, 1);
+
+  const handleClickBookingSeat = (item) => {
+    dispatch({ type: "add", item });
   };
 
-  let ticket;
-
-  for (let i = 0; i < bookedSeatList.length; i++) {
-    ticket = bookedSeatList[i];
-  }
-
   return (
-    <div>
-      {seatListRaw.map((item, index) => {
+    <>
+      {newSeatListData.map((item, index) => {
+        const { seatList } = item;
         return (
-          <div className="d-flex" key={index}>
-            <div className="rowNumber">{item.row}</div>
+          <div className="d-flex" key={"row" + item.row}>
+            <div className="flex-column">
+              <span className="firstChar">{item.row}</span>
+            </div>
+            {seatList.map((item) => {
+              let booked = "";
+              if (item.booked) {
+                booked = "bookedSeat";
+              }
+              let booking = "";
 
-            {item.seatList.map((item, index) => {
-              if (item.numberSeat === ticket?.numberSeat) {
-                return (
-                  <div className="bookingSeat" key={item.numberSeat}>
-                    {item.numberSeat}
-                  </div>
-                );
+              let index = bookedSeatList.findIndex((value) => {
+                return value.numberSeat === item.numberSeat;
+              });
+              if (index !== -1) {
+                booking = "bookingSeat";
               }
-              if (item.booked === true) {
-                return <div className="bookedSeat">{item.numberSeat}</div>;
-              } else if (!item.hasOwnProperty("booked")) {
-                return <div className="rowNumber">{item.numberSeat}</div>;
-              } else {
-                return (
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      handleClickBooking(item);
-                    }}
-                    className="numberSeat"
-                  >
-                    {item.numberSeat}
-                  </div>
-                );
-              }
+
+              return (
+                <button
+                  onClick={() => {
+                    if (item.booked) {
+                      return;
+                    }
+
+                    handleClickBookingSeat(item);
+                  }}
+                  className={`numberSeat ${booking} ${booked}  `}
+                  key={"numberSeat" + item.numberSeat}
+                >
+                  {item.numberSeat}
+                </button>
+              );
             })}
           </div>
         );
       })}
-    </div>
+    </>
   );
 };
 
