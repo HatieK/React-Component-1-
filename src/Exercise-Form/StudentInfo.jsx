@@ -3,6 +3,7 @@ import { Button, Popconfirm } from "antd";
 import styles from "./style.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteStudent, selectedStudent } from "../redux/slice/form";
+import useForm from "../hooks/useForm";
 
 const StudentInfo = ({ enableButton }) => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const StudentInfo = ({ enableButton }) => {
 
   const confirm = (studentId) => {
     dispatch(deleteStudent(studentId));
+    reset();
   };
 
   const cancel = () => {
